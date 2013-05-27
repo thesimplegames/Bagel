@@ -5,9 +5,9 @@ public class Settings : MonoBehaviour {
 	
 	//public static Settings instance;
 
-	public static float bagelSpeed = 0.6f;	//	per second
-	public static float bagelSpeedIncreasePerLevel = 0.03f;
-	public static float bagelGenerationDelay = 2.1f;
+	public static float bagelSpeed = 1.1f;	//	per second
+	public static float bagelSpeedIncreasePerLevel = 0.04f;
+	public static float bagelGenerationDelay = 1.8f;
 	public static float bagelGenerationDelayDecreasePerLevel = 0.02f;
 	
 	public static int boxAScore = 10;

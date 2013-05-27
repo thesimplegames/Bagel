@@ -13,7 +13,7 @@ public class GameController : MonoBehaviour {
 	private GameObject bagelPrefab;
 	
 	private float lastGenerationTime = -10;
-	private float level = 1;
+	private int level = 1;
 	private float bagelsCount = 0;
 	private int bagelCathed = 0;
 	private float missedBagels = 0;
@@ -42,6 +42,7 @@ public class GameController : MonoBehaviour {
 		
 		if (level == Settings.maxLevel) level --;
 		level++;
+		Settings.bagelsToLevel =  4*level;
 		bagelCathed = 0;
 		bagelsCount = 0;
 		bagels.Clear();
@@ -153,6 +154,8 @@ public class GameController : MonoBehaviour {
 	void OnGUI () {
 		GUI.Button(new Rect(0, 0, 100, 100), "Score:\n" + score.ToString());
 		GUI.Button(new Rect(Screen.width - 100, 0, 100, 100), "Missed:\n" + missedBagels.ToString());
+		GUI.Button(new Rect(Screen.width - 100, Screen.height - 100, 100, 100),
+			"Bagels to next level:\n" + (Settings.bagelsToLevel - bagelCathed).ToString() );
 		if (GUI.Button(new Rect(0,Screen.height - 100, 100, 100), "Level:\n" + level.ToString())) {level++; }
 		if (showNextLevel<=0) return;
 		showNextLevel-=Time.deltaTime;
