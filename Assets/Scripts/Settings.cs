@@ -17,7 +17,7 @@ public class Settings : MonoBehaviour {
 	public static int boxEScore = 5;
 	public static int missPenalty = -25;
 	
-	public static int bagelsToLevel = 2;
+	public static int bagelsToLevel = 4;
 	public static int[] levelToTypes = new int[] {5,10,15}; //[0] - to 3 types, [1] to 4 ...
 	
 	
