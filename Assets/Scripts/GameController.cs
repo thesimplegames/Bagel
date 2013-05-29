@@ -14,6 +14,10 @@ public class GameController : MonoBehaviour {
 	
 	private float lastGenerationTime = -10;
 	private int level = 1;
+	private float timeToLevelLeft = Settings.timeToLevel;
+	private int lives = 3;
+	private bool missed = false;
+	
 	private float bagelsCount = 0;
 	private int bagelCathed = 0;
 	private float missedBagels = 0;
@@ -38,17 +42,29 @@ public class GameController : MonoBehaviour {
 		bagelPrefab.rigidbody.isKinematic = true;
 	}
 	
-	private void IncreaseLevel() {
-		
-		if (level == Settings.maxLevel) level --;
-		level++;
-		Settings.bagelsToLevel =  4;//*level;
-		bagelCathed = 0;
+	private void GameOver () {
+	
+		level = 1;
+		score = 0;
+		lives = 3;
+		missed = false;
 		bagelsCount = 0;
 		bagels.Clear();
 		foreach(GameObject bagel in GameObject.FindGameObjectsWithTag("Bagel")) {
 			Destroy(bagel);
 		}
+		missedBagels = -1;
+		
+	}
+	
+	
+	private void IncreaseLevel() {
+		
+		if (level!=Settings.maxLevel && (++level) % Settings.levelsToAddLife == 0 && !missed) lives++;
+		if (level % Settings.levelsToAddLife == 0) missed = false;
+		//Settings.bagelsToLevel =  4;//*level;
+		bagelCathed = 0;
+		bagelsCount = 0;
 		showNextLevel = 1f;
 	}
 	
@@ -77,9 +93,12 @@ public class GameController : MonoBehaviour {
 					break;
 				}
 			}
-			if (bagelCathed>=Settings.bagelsToLevel) IncreaseLevel();
+			//if (bagelCathed>=Settings.bagelsToLevel) IncreaseLevel();
 		} else {
 			score += Settings.missPenalty;
+			lives--;
+			missed = true;
+			if (lives<=0) GameOver();
 			missedBagels++;
 		}
 	}
@@ -103,6 +122,11 @@ public class GameController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (!isPaused) {
+			timeToLevelLeft -= Time.deltaTime;
+			if (timeToLevelLeft<=0) {
+				IncreaseLevel();
+				timeToLevelLeft = Settings.timeToLevel;
+			}
 			if (Time.time > lastGenerationTime + Settings.bagelGenerationDelay + (level - 1) * Settings.bagelGenerationDelayDecreasePerLevel) {
 				lastGenerationTime = Time.time;
 				CreateBagel();
@@ -155,7 +179,7 @@ public class GameController : MonoBehaviour {
 		GUI.Button(new Rect(0, 0, 100, 100), "Score:\n" + score.ToString());
 		GUI.Button(new Rect(Screen.width - 100, 0, 100, 100), "Missed:\n" + missedBagels.ToString());
 		GUI.Button(new Rect(Screen.width - 100, Screen.height - 100, 100, 100),
-			"Bagels left:\n" + (Settings.bagelsToLevel - bagelCathed).ToString() );
+			"Lives:\n" + lives.ToString() );
 		if (GUI.Button(new Rect(0,Screen.height - 100, 100, 100), "Level:\n" + level.ToString())) {level++; }
 		if (showNextLevel<=0) return;
 		showNextLevel-=Time.deltaTime;
